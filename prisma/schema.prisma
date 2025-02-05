@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model charity {
+  id             Int        @id @default(autoincrement())
+  name           String
+  description    String
+  address        String
+  city           String
+  postal_code    String
+  contact        String
+  social_link    String?
+  picture        String?
+  user_id_admin  Int        @unique
+  created_at     DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime   @default(now()) @db.Timestamptz(6)
+  country        String
+  user_admin     users      @relation("UserAdmin", fields: [user_id_admin], references: [id], onDelete: SetNull)
+  donations      donation[]
+  user_recipient users[]    @relation("UserRecipient")
+}
+
+model users {
+  id                   Int            @id @default(autoincrement())
+  google_id            String?
+  email                String         @unique
+  first_name           String?
+  last_name            String?
+  password             String?
+  agree_to_terms       Boolean
+  role                 String
+  status               String
+  story                String?
+  balance              Decimal?       @default(0) @db.Decimal(10, 2)
+  city                 String?
+  picture              String?
+  qrcode               String?
+  charity_id_admin     Int?           @unique
+  charity_id_recipient Int?
+  created_at           DateTime       @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime       @default(now()) @db.Timestamptz(6)
+  country              String?
+  charity_admin        charity?       @relation("UserAdmin")
+  donations_given      donation[]     @relation("Donor")
+  donations_received   donation[]     @relation("Recipient")
+  transaction          transaction[]
+  userbusiness         userbusiness[]
+  charity_recipient    charity?       @relation("UserRecipient", fields: [charity_id_recipient], references: [id])
+}
+
+model donation {
+  id                                      Int       @id @default(autoincrement())
+  donor_id                                Int
+  charity_id                              Int
+  recipient_id                            Int
+  amount_donation                         Decimal   @default(0.00) @db.Decimal(10, 2)
+  message                                 String?
+  created_at                              DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at                              DateTime  @default(now()) @db.Timestamptz(6)
+  payment_id                              Int?
+  charity                                 charity   @relation(fields: [charity_id], references: [id])
+  donor                                   users     @relation("Donor", fields: [donor_id], references: [id])
+  recipient                               users     @relation("Recipient", fields: [recipient_id], references: [id])
+  payment                                 payments? @relation("Payments", fields: [payment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_payment")
+}
+
+model payments {
+  id                                      Int        @id @default(autoincrement())
+  currency                                String
+  amount                                  Decimal?   @default(0.00) @db.Decimal(10, 2)
+  email                                   String
+  payment_id                              String?
+  created_at                              DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at                              DateTime   @default(now()) @db.Timestamptz(6)
+  donation_id                             Int?       @unique
+  status                                  String?
+  payment_intent_id                       String?    @unique
+  donation                                donation[] @relation("Payments")
+}
+
+model paymentintent {
+  id             Int       @id @default(autoincrement())
+  payment_intent String    @unique
+  payload        String?
+  createdat      DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model business {
+  id           Int            @id @default(autoincrement())
+  name         String
+  description  String?
+  products     String?
+  created_at   DateTime?      @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime?      @default(now()) @db.Timestamptz(6)
+  balance      Decimal?       @default(0) @db.Decimal(10, 2)
+  category     String
+  address      String
+  post_code    String
+  city         String
+  country      String
+  transaction  transaction[]
+  userbusiness userbusiness[]
+}
+
+model userbusiness {
+  user_id     Int
+  business_id Int
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  business    business  @relation(fields: [business_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users       users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([user_id, business_id])
+}
+
+model transaction {
+  id          Int       @id @default(autoincrement())
+  amount      Decimal   @db.Decimal(10, 2)
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  user_id     Int
+  business_id Int
+  products    String?
+  receipt     String?
+  business    business  @relation(fields: [business_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users       users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([business_id], map: "idx_business_transaction")
+  @@index([user_id], map: "idx_user_transaction")
+}

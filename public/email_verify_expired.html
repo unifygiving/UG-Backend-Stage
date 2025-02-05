@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Unify Giving - API</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            font-family: Spartan, Arial, sans-serif;
+            color: #fff;
+            font-weight: 700;
+            font-style: normal;
+            letter-spacing: .5px;
+            word-spacing: 1px;
+            background-color: transparent;
+            background-image: radial-gradient(at bottom center, #4f1cd5 5%, #1b0453 99%);
+            min-height: 100vh;
+            margin: 0
+        }
+
+        h1 {
+            text-shadow: 0 0 10px #9ef822
+        }
+
+        p {
+            font-weight: 400;
+            text-align: center
+        }
+
+        .content {
+            flex: 1 0 auto;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            flex-direction: column;
+            padding: 10px
+        }
+
+        .timer {
+            font-size: 50px;
+            margin: 0
+        }
+
+        .curved-bottom {
+            flex-shrink: 0
+        }
+
+        svg {
+            margin-bottom: -5px
+        }
+
+        footer {
+            height: 200px;
+            background-color: #fff
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <h1>Unify Giving</h1>
+        <p>Uh oh, that link has expired.</p>
+        <h1 class="timer">&#9201;</h1>
+        <p>Go back to the app and click on "Resend email"</p>
+    </div>
+    <div class="curved-bottom" data-negative="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none">
+            <path fill="white" d="M500,97C126.7,96.3,0.8,19.8,0,0v100l1000,0V1C1000,19.4,873.3,97.8,500,97z"></path>
+        </svg>
+    </div>
+    <footer></footer>
+</body>
+
+</html>

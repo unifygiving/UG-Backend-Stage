@@ -1,0 +1,89 @@
+Unify Giving ER Diagram
+
+user:
+-userId (int, not null, unique)
+-username (varchar, not null, unique)
+-firstName (varchar, not null)
+-lastName (varchar, not null)
+-phoneNumber (varchar, null)
+-email (varchar, not null, unique)
+-password (varchar)
+-role (admin, donor, recipient, charity) (varchar, not null)
+-status (active, deleted, suspended) (varchar, not null)
+-bio (varchar, null)
+
+donation (could also be called transaction):
+-donationId (int, not null, unique)
+-amount (decimal, not null)
+-donationDate (datetime, not null)
+-donationStatus (varchar, not null)
+-donorId (int, not null) (references User entity, references userId)
+-recipientId (int, not null) (references User entity, references userId)
+
+campaign:
+-campaignId (int, not null, unique)
+-name (varchar, not null)
+-description (varchar, null)
+-targetAmount (decimal, not null)
+-startDate (datetime, not null)
+-endDate (datetime, not null)
+-charityId (int, not null) (references User entity, references userId)
+
+notification:
+-notificationId (int, not null, unique)
+-title (varchar, not null)
+-message (varchar, not null)
+-notificationType (varchar, not null)
+-recipientId (int, not null) (references User entity, references userId)
+-notificationStatus (varchar, not null)
+
+feedback:
+-feedbackId (int, not null, unique)
+-rating (int, not null)
+-comment (varchar, null)
+-feedbackDate (datetime, not null)
+-donorId (int, not null) (references User entity, references userId)
+-recipientId (int, not null) (references User entity, references userId)
+
+donor_stats:
+-donorId (int, not null) (references User entity, references userId)
+-numberOfDonations (int, not null)
+-lastDonationDate (datetime, null)
+-numberOfPeopleHelped (int, not null)
+-points (int, not null)
+-rank (int, not null)
+
+recipient_stats:
+-recipientId (int, not null) (references User entity, references userId)
+-totalDonationsReceived (decimal, not null)
+-averageDonationAmount (decimal, not null)
+-totalAmountReceived (decimal, not null)
+
+charity_stats:
+-charityId (int, not null) (references User entity, references userID)
+-charityDescription (varchar, not null)
+-totalDonationsReceived (decimal, not null)
+-totalCampaignsCreated (int, not null)
+-totalAmountReceived (decimal, not null)
+-totalDonorsReached (int, not null)
+-totalRecipientsHelped (int, not null)
+
+-- See below for entity relationship explanation--
+
+User: This entity represents the users of the platform, who can have different roles such as admin, donor, recipient, or charity.
+
+Donation: This entity represents the donations made by the donors on the platform. Each donation is associated with a donor and a recipient (both referenced by the User entity), and has a status indicating whether it is pending, completed, or cancelled.
+
+Campaign: This entity represents the charitable campaigns created by the charities on the platform. Each campaign is associated with a charity (referenced by the User entity), and has a name, description, target amount, start and end dates.
+
+Notification: This entity represents the notifications sent to users on the platform regarding donations, campaigns or transactions. Notifications can be marked as read or unread.
+
+Feedback: This entity represents the feedback given by the donors to the recipients (who can be either other users or charities). Feedback can include a rating, comment, and the date it was given.
+
+DonorStats: This entity represents statistics related to the donors on the platform, such as the number of donations they've made, their last donation date, number of people helped, and their rank.
+
+RecipientStats: This entity represents statistics related to the recipients on the platform, such as the total amount of donations received, average donation amount, and total number of donors who helped.
+
+CharityStats: This entity represents statistics related to the charities on the platform, such as the total amount of donations received, total campaigns created, total amount received, and total number of recipients helped.
+
+May be benefitial to have an account entity depending on app requirements. 
