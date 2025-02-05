@@ -53,7 +53,7 @@ This backend app handles requests from a React Native mobile app and a React adm
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/unifygiving/backend-app.git
+   git clone https://github.com/unifygiving/UG-Backend-Stage.git
    ```
 2. Install NPM packages
    ```sh
